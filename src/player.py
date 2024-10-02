@@ -2,15 +2,14 @@ import pygame
 
 
 class Player:
-    # define the player's attributes
     def __init__(self):
         self.position = pygame.Vector2(400, 300)
-        self.color = (255, 0, 0)  # Red color for the player
-        self.radius = 20
+        self.image = pygame.Surface((50, 50))  # Create a simple square player
+        self.image.fill("blue")  # Fill the square with blue color
 
-        def update(self):
-            # Placeholder: update player's stats or handle events
-            pass
+    def move(self, dx, dy):
+        self.position.x += dx
+        self.position.y += dy
 
-        def render(self, screen):
-            pygame.draw.circle(screen, self.color, (int(self.position.x), int(self.position.y)), self.radius)
+    def render(self, screen):
+        screen.blit(self.image, self.position)
