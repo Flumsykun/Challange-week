@@ -3,7 +3,7 @@ import pygame
 from player import Player
 from events import EventManager
 from ui import GameUI, StartMenuUI
-from config import SCREEN_WIDTH, SCREEN_HEIGHT, FPS
+from config import SCREEN_WIDTH, SCREEN_HEIGHT, FPS  # <-- Import screen settings
 import random
 
 class Game:
