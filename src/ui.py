@@ -1,9 +1,12 @@
 # ui.py
 import pygame
 from config import WHITE, BLACK, GREY, FONT
+from config import SCREEN_WIDTH, SCREEN_HEIGHT
+
 
 class GameUI:
     """Handles the user interface for the game."""
+
     def __init__(self, player, event_manager):
         self.player = player
         self.events = event_manager
@@ -20,7 +23,8 @@ class GameUI:
         button_rect = pygame.Rect(x, y, width, height)
         pygame.draw.rect(screen, color, button_rect)
         text_surface = FONT.render(text, True, BLACK)
-        screen.blit(text_surface, (x + (width // 2 - text_surface.get_width() // 2), y + (height // 2 - text_surface.get_height() // 2)))
+        screen.blit(text_surface, (x + (width // 2 - text_surface.get_width() //
+                    2), y + (height // 2 - text_surface.get_height() // 2)))
         return button_rect
 
     def update(self):
@@ -53,6 +57,7 @@ class GameUI:
 
 class StartMenuUI:
     """Handles the start menu where the player chooses Custom Life or Random Life."""
+
     def update(self):
         """Updates the start menu."""
         screen = pygame.display.get_surface()
@@ -61,7 +66,8 @@ class StartMenuUI:
         # Draw title
         title_font = pygame.font.SysFont('Arial', 40)
         title_surface = title_font.render("Welcome to BitLife", True, BLACK)
-        screen.blit(title_surface, (SCREEN_WIDTH // 2 - title_surface.get_width() // 2, 100))
+        screen.blit(title_surface, (SCREEN_WIDTH // 2 -
+                    title_surface.get_width() // 2, 100))
 
         # Draw Custom Life button
         custom_button_rect = self.draw_button('Custom Life', 300, 300, 200, 50)
@@ -77,9 +83,6 @@ class StartMenuUI:
         button_rect = pygame.Rect(x, y, width, height)
         pygame.draw.rect(screen, color, button_rect)
         text_surface = FONT.render(text, True, BLACK)
-        screen.blit(text_surface, (x + (width // 2 - text_surface.get_width() // 2), y + (height // 2 - text_surface.get_height() // 2)))
+        screen.blit(text_surface, (x + (width // 2 - text_surface.get_width() //
+                    2), y + (height // 2 - text_surface.get_height() // 2)))
         return button_rect
-
-
-
-                
