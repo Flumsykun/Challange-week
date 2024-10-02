@@ -1,24 +1,14 @@
-class Event:
-    def __init__(self, description, options=[]):
-        self.description = description
-        self.options = []
+# events.py
+class EventManager:
+    """Handles game events like life events and random occurrences."""
+    def __init__(self):
+        self.events = []
 
-    def add_option(self, option):
-        self.options.append(option)
+    def add_event(self, event):
+        """Adds a new event to the log."""
+        self.events.append(event)
 
-    def trigger(self):
-        print(self.description)
-        print("Choices:")
-        for i, choice in enumerate(self.options):
-            print(f"{i + 1}: {choice.description}")
+    def get_recent_events(self, count=5):
+        """Returns the last few events."""
+        return self.events[-count:]
 
-
-# Example usage
-event = Event("You found a treasure chest!", ["Open it", "Leave it"])
-event.trigger()
-
-
-class Option:
-    def __init__(self, description, effect):
-        self.description = description
-        self.effect = effect  # A function that modifies player stats

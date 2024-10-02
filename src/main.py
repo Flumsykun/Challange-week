@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import pygame
 import sys
 from game import Game
@@ -34,3 +35,12 @@ def main():
 
     if __name__ == "__main__":
         main()
+=======
+# main.py
+from game import Game
+
+if __name__ == "__main__":
+    # Initialize and run the game
+    game = Game()
+    game.run()
+>>>>>>> Stashed changes

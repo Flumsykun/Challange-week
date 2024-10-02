@@ -1,18 +1,23 @@
-import pygame
-
-
+# player.py
 class Player:
-    def __init__(self):
-        self.position = pygame.Vector2(400, 300)
-        self.image = pygame.Surface((50, 50))  # Create a simple square player
-        self.image.fill("blue")  # Fill the square with blue color
+    """Represents the player with stats like age, happiness, etc."""
+    def __init__(self, name):
+        self.name = name
+        self.age = 0
+        self.happiness = 100
+        self.health = 100
+        self.smarts = 100
+        self.looks = 100
 
-        self.stats = {
-            "health": 100,
-            "money": 1000,
-            "happiness": 80
-        }
+    def age_up(self):
+        """Increases player's age and adjusts stats."""
+        self.age += 1
+        self.happiness -= 5
+        self.health -= 5
+        self.smarts += 2
+        self.looks -= 1
 
+<<<<<<< Updated upstream
     def update(self):
         # Update player stats if needed
         pass
@@ -23,3 +28,5 @@ class Player:
 
     def render(self, screen):
         screen.blit(self.image, self.position)
+=======
+>>>>>>> Stashed changes
