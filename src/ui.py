@@ -1,6 +1,6 @@
 # ui.py
 import pygame
-from config import WHITE, BLACK, GREY, BLUE, FONT
+from config import WHITE, BLACK, GREY, FONT
 
 class GameUI:
     """Handles the user interface for the game."""
@@ -47,9 +47,39 @@ class GameUI:
         # Draw buttons
         age_button = self.draw_button('Age Up', 50, 400, 150, 50)
 
-        # Handle button events
-        if pygame.mouse.get_pressed()[0]:
-            if age_button.collidepoint(pygame.mouse.get_pos()):
-                self.player.age_up()
-                self.events.add_event(f"You are now {self.player.age} years old.")
+        # Handle button events, moved the logic to game.py
+        return age_button
+
+
+class StartMenuUI:
+    """Handles the start menu where the player chooses Custom Life or Random Life."""
+    def update(self):
+        """Updates the start menu."""
+        screen = pygame.display.get_surface()
+        screen.fill(WHITE)
+
+        # Draw title
+        title_font = pygame.font.SysFont('Arial', 40)
+        title_surface = title_font.render("Welcome to BitLife", True, BLACK)
+        screen.blit(title_surface, (SCREEN_WIDTH // 2 - title_surface.get_width() // 2, 100))
+
+        # Draw Custom Life button
+        custom_button_rect = self.draw_button('Custom Life', 300, 300, 200, 50)
+
+        # Draw Random Life button
+        random_button_rect = self.draw_button('Random Life', 300, 400, 200, 50)
+
+        return custom_button_rect, random_button_rect
+
+    def draw_button(self, text, x, y, width, height, color=GREY):
+        """Draws a button on the screen."""
+        screen = pygame.display.get_surface()
+        button_rect = pygame.Rect(x, y, width, height)
+        pygame.draw.rect(screen, color, button_rect)
+        text_surface = FONT.render(text, True, BLACK)
+        screen.blit(text_surface, (x + (width // 2 - text_surface.get_width() // 2), y + (height // 2 - text_surface.get_height() // 2)))
+        return button_rect
+
+
+
                 
