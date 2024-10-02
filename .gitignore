@@ -1,0 +1,50 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environments
+.venv/
+env/
+ENV/
+venv/
+
+# Editor-specific
+.vscode/
+.idea/
+*.code-workspace
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Log files
+*.log
+*.out
+
+# Pipenv
+Pipfile.lock
+
+# dotenv environment variables
+.env
+
+# Coverage reports
+.coverage
+.coverage.*
+htmlcov/
+*.cover
+*.py,cover
+.cache
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
