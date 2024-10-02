@@ -7,6 +7,12 @@ class Player:
         self.image = pygame.Surface((50, 50))  # Create a simple square player
         self.image.fill("blue")  # Fill the square with blue color
 
+        self.stats = {
+            "health": 100,
+            "money": 1000,
+            "happiness": 80
+        }
+
     def move(self, dx, dy):
         self.position.x += dx
         self.position.y += dy
