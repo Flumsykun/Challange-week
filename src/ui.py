@@ -5,7 +5,7 @@ import pygame
 class UI:
     def __init__(self, screen):
         self.screen = screen
-        self.font = pygame.font.Font(None, 36)  # Default font and size
+        self.font = pygame.font.Font("assets/fonts/AvenirLTStd-Light.ttf", 36)
 
     def draw_text(self, text, position, color=(255, 255, 255)):
         """Render text at the given position."""

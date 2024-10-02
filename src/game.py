@@ -1,5 +1,6 @@
 import pygame
 from player import Player  # Import the Player class from the player module
+from ui import UI  # Import the UI class from the ui module
 
 
 class Game:
@@ -8,6 +9,7 @@ class Game:
         # The Pygame screen object where the game is rendered
         self.screen = screen
         self.player = Player()  # Create a player object
+        self.ui = UI(screen)  # Create a UI object for displaying text
 
     def handle_events(self):
         # Handle all Pygame events (like key presses, window close, etc.)
@@ -44,10 +46,10 @@ class Game:
 
     def render(self):
         # Render all game objects onto the screen
-        # Fill the screen with a dark gray color
         self.screen.fill((50, 50, 50))
-        # Draw the player object onto the screen
         self.player.render(self.screen)
+        # Render the player's stats on the screen
+        self.ui.draw_stats(self.player.stats)
 
     def run(self):
         # Main game loop
