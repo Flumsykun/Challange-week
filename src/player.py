@@ -13,6 +13,10 @@ class Player:
             "happiness": 80
         }
 
+    def update(self):
+        # Update player stats if needed
+        pass
+
     def move(self, dx, dy):
         self.position.x += dx
         self.position.y += dy
