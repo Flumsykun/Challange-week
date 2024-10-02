@@ -8,19 +8,11 @@ class GameUI:
         self.player = player
         self.events = event_manager
 
-<<<<<<< Updated upstream
-class UI:
-    def __init__(self, screen):
-        self.screen = screen
-        self.font = pygame.font.Font(
-            "..//assets/fonts/AvenirLTStd-Light.otf", 36)
-=======
     def draw_text(self, text, x, y):
         """Draws text on the screen."""
         screen = pygame.display.get_surface()
         text_surface = FONT.render(text, True, BLACK)
         screen.blit(text_surface, (x, y))
->>>>>>> Stashed changes
 
     def draw_button(self, text, x, y, width, height, color=GREY):
         """Draws a button on the screen."""
@@ -60,4 +52,4 @@ class UI:
             if age_button.collidepoint(pygame.mouse.get_pos()):
                 self.player.age_up()
                 self.events.add_event(f"You are now {self.player.age} years old.")
-
+                

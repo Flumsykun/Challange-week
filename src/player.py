@@ -16,17 +16,3 @@ class Player:
         self.health -= 5
         self.smarts += 2
         self.looks -= 1
-
-<<<<<<< Updated upstream
-    def update(self):
-        # Update player stats if needed
-        pass
-
-    def move(self, dx, dy):
-        self.position.x += dx
-        self.position.y += dy
-
-    def render(self, screen):
-        screen.blit(self.image, self.position)
-=======
->>>>>>> Stashed changes
