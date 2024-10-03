@@ -28,7 +28,12 @@ class Game:
         self.player = None
         self.ui = None
 
+        # Dropdown for nationality
+        self.selected_nationality = 'American'
+        self.nationality_options = [
+            'American', 'Canadian', 'British', 'Dutch', 'German', 'Japanese']
     # Defines the random event trigger method
+
     def random_event_trigger(self):
         """Trigger a random event based on probability."""
         if random.randint(1, 5) == 1:  # 1 in 5 chance for a life event each year
