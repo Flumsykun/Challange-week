@@ -20,4 +20,3 @@ FONT = pygame.font.SysFont('Arial', 24)
 
 # Frame rate
 FPS = 60
-
