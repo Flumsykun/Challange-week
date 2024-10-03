@@ -39,7 +39,8 @@ class Game:
             # Apply event impact on player stats
             for stat, value in event["impact"].items():
                 if hasattr(self.player, stat):
-                    setattr(self.player, stat, getattr(self.player, stat) + value)
+                    setattr(self.player, stat, getattr(
+                        self.player, stat) + value)
                     print(f"Updated {stat} by {value}")  # Debug print
                 else:
                     print(f"Player has no attribute {stat}")  # Debug print
@@ -59,7 +60,8 @@ class Game:
     def create_random_life(self):
         """Generates random life for the player."""
         names = ['John', 'Jane', 'Alex', 'Emily', 'Chris', 'Katie']
-        nationalities = ['American', 'Canadian', 'British', 'Dutch', 'German', 'Japanese']
+        nationalities = ['American', 'Canadian',
+                         'British', 'Dutch', 'German', 'Japanese']
         genders = ['Male', 'Female']
 
         name = random.choice(names)
@@ -95,7 +97,8 @@ class Game:
                             age_button_rect = self.ui.update()
                             if age_button_rect.collidepoint(pygame.mouse.get_pos()) and not age_button_clicked:
                                 self.run_year()  # Increment age by one year
-                                self.events.add_event(f"You are now {self.player.age} years old.")
+                                self.events.add_event(
+                                    f"You are now {self.player.age} years old.")
                                 age_button_clicked = True  # Set the flag to true to prevent rapid aging
 
                 if event.type == pygame.MOUSEBUTTONUP:  # Reset the flag when the mouse button is released
@@ -111,7 +114,8 @@ class Game:
                     # If the age button is clicked, trigger the year function
                     if not age_button_clicked:
                         self.run_year()  # Call run_year instead of just aging up
-                        self.events.add_event(f"You are now {self.player.age} years old.")
+                        self.events.add_event(
+                            f"You are now {self.player.age} years old.")
                         age_button_clicked = True  # Set the flag to prevent multiple triggers
 
             if self.toast_message:
@@ -129,4 +133,3 @@ class Game:
 if __name__ == "__main__":
     game_instance = Game()
     game_instance.run()
-
