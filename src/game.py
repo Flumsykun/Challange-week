@@ -45,7 +45,8 @@ class Game:
             # Apply event impact on player stats
             for stat, value in event["impact"].items():
                 if hasattr(self.player, stat):
-                    setattr(self.player, stat, getattr(self.player, stat) + value)
+                    setattr(self.player, stat, getattr(
+                        self.player, stat) + value)
                     print(f"Updated {stat} by {value}")  # Debug print
                 else:
                     print(f"Player has no attribute {stat}")  # Debug print
@@ -200,6 +201,7 @@ class Game:
     def run(self):
         """Main game loop."""
         running = True
+        age_button_clicked = False  # Flag to check if the age button was clicked
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -218,7 +220,15 @@ class Game:
                                 self.create_random_life()
                                 self.showing_menu = False
                                 print("Random Life selected!")  # Debug message
+                    elif self.showing_game_ui and self.player:
+                        age_button_rect = self.ui.update()
+                        if age_button_rect.collidepoint(mouse_pos) and not age_button_clicked:
+                            self.run_year()  # Increment age by one year
+                            self.events.add_event(f"You are now {self.player.age} years old.")
+                            age_button_clicked = True  # Set the flag to true to prevent rapid aging
 
+            if event.type == pygame.MOUSEBUTTONUP:  # Reset the flag when the mouse button is released
+                age_button_clicked = False
             if self.showing_menu:
                 # Show start menu
                 self.start_menu.update()
