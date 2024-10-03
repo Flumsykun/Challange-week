@@ -46,10 +46,6 @@ class Game:
         # Check if a random event should occur
         self.random_event_trigger()
 
-        # Dropdown for nationality
-        self.selected_nationality = 'American'
-        self.nationality_options = ['American', 'Canadian', 'British', 'Dutch', 'German', 'Japanese']
-
     def create_random_life(self):
         """Generates random life for the player."""
         names = ['John', 'Jane', 'Alex', 'Emily', 'Chris', 'Katie']
@@ -64,7 +60,8 @@ class Game:
         # Create the player with random values
         self.player = Player(name, nationality, gender)
         self.ui = GameUI(self.player, self.events)
-        self.events.add_event(f"You were born as {self.player.name}, a {self.player.gender} from {self.player.nationality}.")
+        self.events.add_event(
+            f"You were born as {self.player.name}, a {self.player.gender} from {self.player.nationality}.")
         self.showing_game_ui = True  # Set the flag to show the game UI
 
     def custom_life_input(self):
@@ -120,46 +117,59 @@ class Game:
 
             # Render naam invoerveld
             self.draw_text("Enter Name:", 250, 170)
-            txt_surface_name = pygame.font.Font(None, 32).render(text_name, True, color_name)
+            txt_surface_name = pygame.font.Font(
+                None, 32).render(text_name, True, color_name)
             width = max(200, txt_surface_name.get_width() + 10)
             input_box_name.w = width
-            self.screen.blit(txt_surface_name, (input_box_name.x + 5, input_box_name.y + 5))
+            self.screen.blit(txt_surface_name,
+                             (input_box_name.x + 5, input_box_name.y + 5))
             pygame.draw.rect(self.screen, color_name, input_box_name, 2)
 
             # Render geslacht invoerveld
             self.draw_text("Enter Gender (Male/Female):", 150, 270)
-            txt_surface_gender = pygame.font.Font(None, 32).render(text_gender, True, color_gender)
+            txt_surface_gender = pygame.font.Font(
+                None, 32).render(text_gender, True, color_gender)
             width = max(200, txt_surface_gender.get_width() + 10)
             input_box_gender.w = width
-            self.screen.blit(txt_surface_gender, (input_box_gender.x + 5, input_box_gender.y + 5))
+            self.screen.blit(txt_surface_gender,
+                             (input_box_gender.x + 5, input_box_gender.y + 5))
             pygame.draw.rect(self.screen, color_gender, input_box_gender, 2)
 
             # Dropdown voor nationaliteit
             dropdown_rect = pygame.Rect(300, 400, 140, 32)
             pygame.draw.rect(self.screen, GREY, dropdown_rect)
-            dropdown_surface = pygame.font.Font(None, 32).render(self.selected_nationality, True, BLACK)
-            self.screen.blit(dropdown_surface, (dropdown_rect.x + 5, dropdown_rect.y + 5))
+            dropdown_surface = pygame.font.Font(None, 32).render(
+                self.selected_nationality, True, BLACK)
+            self.screen.blit(dropdown_surface,
+                             (dropdown_rect.x + 5, dropdown_rect.y + 5))
 
             if pygame.mouse.get_pressed()[0]:
                 if dropdown_rect.collidepoint(pygame.mouse.get_pos()):
                     # Toggle dropdown selectie
-                    current_index = self.nationality_options.index(self.selected_nationality)
-                    self.selected_nationality = self.nationality_options[(current_index + 1) % len(self.nationality_options)]
+                    current_index = self.nationality_options.index(
+                        self.selected_nationality)
+                    self.selected_nationality = self.nationality_options[(
+                        current_index + 1) % len(self.nationality_options)]
 
             # Render nationaliteit keuze
             self.draw_text("Select Nationality:", 250, 370)
 
             # Render de startknop
-            start_button_rect = pygame.Rect(300, 500, 140, 32)  # Definieer een rechthoek voor de startknop
-            pygame.draw.rect(self.screen, color_active if (text_name and text_gender) else color_inactive, start_button_rect)
-            self.draw_text("Start Game", 315, 505)  # Plaats de tekst in de knop
+            # Definieer een rechthoek voor de startknop
+            start_button_rect = pygame.Rect(300, 500, 140, 32)
+            pygame.draw.rect(self.screen, color_active if (
+                text_name and text_gender) else color_inactive, start_button_rect)
+            # Plaats de tekst in de knop
+            self.draw_text("Start Game", 315, 505)
 
             # Controleer of de startknop is ingedrukt
             if pygame.mouse.get_pressed()[0] and start_button_rect.collidepoint(pygame.mouse.get_pos()):
                 if text_name and text_gender:  # Zorg ervoor dat beide velden zijn ingevuld
-                    self.player = Player(text_name, self.selected_nationality, text_gender)
+                    self.player = Player(
+                        text_name, self.selected_nationality, text_gender)
                     self.ui = GameUI(self.player, self.events)
-                    self.events.add_event(f"You were born as {self.player.name}, a {self.player.gender} from {self.player.nationality}.")
+                    self.events.add_event(
+                        f"You were born as {self.player.name}, a {self.player.gender} from {self.player.nationality}.")
                     self.showing_game_ui = True  # Switch to the main game UI after custom life input
                     done = True  # Exit the input loop
 
@@ -214,19 +224,7 @@ class Game:
 
         pygame.quit()
 
+
 if __name__ == "__main__":
     game_instance = Game()
     game_instance.run()
-
-
-
-
-
-
-
-
-
-
-
-
-
