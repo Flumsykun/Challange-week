@@ -1,8 +1,4 @@
 import pygame
-<<<<<<< Updated upstream
-from player import Player  # Import the Player class from the player module
-from ui import UI  # Import the UI class from the ui module
-=======
 from player import Player
 from events import EventManager
 from events import LifeEventManager
@@ -11,7 +7,6 @@ from ui.ui import GameUI, StartMenuUI
 from config import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, WHITE, GREY, BLACK
 from ui.toast import ToastMessage
 import random
->>>>>>> Stashed changes
 
 
 class Game:
@@ -35,12 +30,6 @@ class Game:
         # frame-independent movement
         keys = pygame.key.get_pressed()  # Get the state of all keys (pressed or not)
 
-<<<<<<< Updated upstream
-        # Move the player upwards when 'W' is pressed
-        if keys[pygame.K_w]:
-            # Move up (negative y) at a speed of 300 units/second
-            self.player.move(0, -300 * dt)
-=======
         self.player = Player
         self.available_activities = get_activities_for_age(self.player.age)
 
@@ -48,19 +37,12 @@ class Game:
         self.showing_menu = True
         self.showing_game_ui = False
         self.toast_message = None
->>>>>>> Stashed changes
 
         # Move the player downwards when 'S' is pressed
         if keys[pygame.K_s]:
             # Move down (positive y) at a speed of 300 units/second
             self.player.move(0, 300 * dt)
 
-<<<<<<< Updated upstream
-        # Move the player left when 'A' is pressed
-        if keys[pygame.K_a]:
-            # Move left (negative x) at a speed of 300 units/second
-            self.player.move(-300 * dt, 0)
-=======
     def update(self):
         # Update game logic, including player stats and events
         for activity in self.available_activities:
@@ -73,7 +55,6 @@ class Game:
         if random.randint(1, 5) == 1:  # 1 in 5 chance for a life event each year
             event = LifeEventManager.get_random_life_event()
             print(f"Random event triggered: {event['event']}")  # Debug print
->>>>>>> Stashed changes
 
         # Move the player right when 'D' is pressed
         if keys[pygame.K_d]:
