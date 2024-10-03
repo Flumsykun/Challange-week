@@ -53,7 +53,7 @@ class GameUI:
 
 
 class StartMenuUI:
-    """Handles the start menu where the player chooses Custom Life or Random Life."""
+    """Handles the start menu where the player chooses Random Life."""
 
     def update(self):
         """Updates the start menu."""
@@ -65,13 +65,10 @@ class StartMenuUI:
         title_surface = title_font.render("Welcome to BitLife", True, BLACK)
         screen.blit(title_surface, (400 - title_surface.get_width() // 2, 100))
 
-        # Draw Custom Life button
-        custom_button_rect = self.draw_button('Custom Life', 300, 300, 200, 50)
-
         # Draw Random Life button
-        random_button_rect = self.draw_button('Random Life', 300, 400, 200, 50)
+        random_button_rect = self.draw_button('Random Life', 300, 300, 200, 50)
 
-        return custom_button_rect, random_button_rect
+        return random_button_rect
 
     def draw_button(self, text, x, y, width, height, color=GREY):
         """Draws a button on the screen."""
