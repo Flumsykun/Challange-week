@@ -1,8 +1,10 @@
 import pygame
 from config import WHITE, BLACK, GREY, FONT
 
+
 class GameUI:
     """Handles the user interface for the game."""
+
     def __init__(self, player, event_manager):
         self.player = player
         self.events = event_manager
@@ -19,11 +21,12 @@ class GameUI:
         button_rect = pygame.Rect(x, y, width, height)
         pygame.draw.rect(screen, color, button_rect)
         text_surface = FONT.render(text, True, BLACK)
-        screen.blit(text_surface, (x + (width // 2 - text_surface.get_width() // 2), y + (height // 2 - text_surface.get_height() // 2)))
+        screen.blit(text_surface, (x + (width // 2 - text_surface.get_width() //
+                    2), y + (height // 2 - text_surface.get_height() // 2)))
         return button_rect
 
     def update(self):
-        """Updates the UI, including player stats and event log.""" 
+        """Updates the UI, including player stats and event log."""
         screen = pygame.display.get_surface()
         screen.fill(WHITE)
 
@@ -48,8 +51,10 @@ class GameUI:
 
         return age_button
 
+
 class StartMenuUI:
     """Handles the start menu where the player chooses Custom Life or Random Life."""
+
     def update(self):
         """Updates the start menu."""
         screen = pygame.display.get_surface()
@@ -74,11 +79,6 @@ class StartMenuUI:
         button_rect = pygame.Rect(x, y, width, height)
         pygame.draw.rect(screen, color, button_rect)
         text_surface = FONT.render(text, True, BLACK)
-        screen.blit(text_surface, (x + (width // 2 - text_surface.get_width() // 2), y + (height // 2 - text_surface.get_height() // 2)))
+        screen.blit(text_surface, (x + (width // 2 - text_surface.get_width() //
+                    2), y + (height // 2 - text_surface.get_height() // 2)))
         return button_rect
-
-
-
-
-
-

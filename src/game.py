@@ -22,6 +22,8 @@ class Game:
         self.showing_menu = True
         self.showing_custom_life = False
         self.showing_game_ui = False
+        self.showing_event_popup = False
+        self.current_event_message = ""
 
         # Initialize UI components
         self.start_menu = StartMenuUI()
@@ -32,21 +34,32 @@ class Game:
         self.selected_nationality = 'American'
         self.nationality_options = [
             'American', 'Canadian', 'British', 'Dutch', 'German', 'Japanese']
-    # Defines the random event trigger method
 
     def random_event_trigger(self):
         """Trigger a random event based on probability."""
+        print("Checking for random event...")  # Debug print
         if random.randint(1, 5) == 1:  # 1 in 5 chance for a life event each year
             event = LifeEventManager.get_random_life_event()
-            print(event["event"])
+            print(f"Random event triggered: {event['event']}")  # Debug print
 
             # Apply event impact on player stats
             for stat, value in event["impact"].items():
-                setattr(self.player, stat, getattr(self.player, stat) + value)
+                if hasattr(self.player, stat):
+                    setattr(self.player, stat, getattr(
+                        self.player, stat) + value)
+                    print(f"Updated {stat} by {value}")  # Debug print
+                else:
+                    print(f"Player has no attribute {stat}")  # Debug print
+
+            # Set the event message to display as a pop-up
+            self.current_event_message = event["event"]
+            self.showing_event_popup = True
 
     def run_year(self):
         """Simulate one year of the game."""
+        print("Running a year...")  # Debug print
         self.player.age_up()
+        print(f"Player aged up to {self.player.age}")  # Debug print
 
         # Check if a random event should occur
         self.random_event_trigger()
@@ -82,7 +95,7 @@ class Game:
         active_name = False
         active_gender = False
 
-        # Begin de invoerloop
+        # Start the game loop
         done = False
         while not done:
             for event in pygame.event.get():
@@ -120,7 +133,7 @@ class Game:
 
             self.screen.fill(WHITE)
 
-            # Render naam invoerveld
+            # Render name input
             self.draw_text("Enter Name:", 250, 170)
             txt_surface_name = pygame.font.Font(
                 None, 32).render(text_name, True, color_name)
@@ -130,7 +143,7 @@ class Game:
                              (input_box_name.x + 5, input_box_name.y + 5))
             pygame.draw.rect(self.screen, color_name, input_box_name, 2)
 
-            # Render geslacht invoerveld
+            # Render gender input
             self.draw_text("Enter Gender (Male/Female):", 150, 270)
             txt_surface_gender = pygame.font.Font(
                 None, 32).render(text_gender, True, color_gender)
@@ -140,7 +153,7 @@ class Game:
                              (input_box_gender.x + 5, input_box_gender.y + 5))
             pygame.draw.rect(self.screen, color_gender, input_box_gender, 2)
 
-            # Dropdown voor nationaliteit
+            # Dropdown for nationality
             dropdown_rect = pygame.Rect(300, 400, 140, 32)
             pygame.draw.rect(self.screen, GREY, dropdown_rect)
             dropdown_surface = pygame.font.Font(None, 32).render(
@@ -150,26 +163,25 @@ class Game:
 
             if pygame.mouse.get_pressed()[0]:
                 if dropdown_rect.collidepoint(pygame.mouse.get_pos()):
-                    # Toggle dropdown selectie
+                    # Toggle dropdown selection
                     current_index = self.nationality_options.index(
                         self.selected_nationality)
                     self.selected_nationality = self.nationality_options[(
                         current_index + 1) % len(self.nationality_options)]
 
-            # Render nationaliteit keuze
+            # Render nationality selection
             self.draw_text("Select Nationality:", 250, 370)
 
-            # Render de startknop
-            # Definieer een rechthoek voor de startknop
+            # Render the start button
             start_button_rect = pygame.Rect(300, 500, 140, 32)
             pygame.draw.rect(self.screen, color_active if (
                 text_name and text_gender) else color_inactive, start_button_rect)
-            # Plaats de tekst in de knop
+            # Placeholder text for the start button
             self.draw_text("Start Game", 315, 505)
 
-            # Controleer of de startknop is ingedrukt
+            # Check if the start button is clicked and both fields are filled
             if pygame.mouse.get_pressed()[0] and start_button_rect.collidepoint(pygame.mouse.get_pos()):
-                if text_name and text_gender:  # Zorg ervoor dat beide velden zijn ingevuld
+                if text_name and text_gender:  # Make sure both fields are filled
                     self.player = Player(
                         text_name, self.selected_nationality, text_gender)
                     self.ui = GameUI(self.player, self.events)
@@ -186,6 +198,19 @@ class Game:
         font = pygame.font.Font(None, 32)
         text_surface = font.render(text, True, BLACK)
         self.screen.blit(text_surface, (x, y))
+
+    def draw_event_popup(self):
+        """Draws the event pop-up on the screen."""
+        popup_rect = pygame.Rect(100, 100, 600, 200)
+        pygame.draw.rect(self.screen, GREY, popup_rect)
+        self.draw_text(self.current_event_message, 120, 150)
+
+        # Draw a close button
+        close_button_rect = pygame.Rect(350, 250, 100, 40)
+        pygame.draw.rect(self.screen, WHITE, close_button_rect)
+        self.draw_text("Close", 370, 260)
+
+        return close_button_rect
 
     def run(self):
         """Main game loop."""
@@ -208,6 +233,12 @@ class Game:
                                 self.create_random_life()
                                 self.showing_menu = False
                                 print("Random Life selected!")  # Debug message
+                        elif self.showing_event_popup:
+                            close_button_rect = self.draw_event_popup()
+                            mouse_pos = pygame.mouse.get_pos()
+                            if close_button_rect.collidepoint(mouse_pos):
+                                self.showing_event_popup = False
+                                print("Event pop-up closed")  # Debug message
 
             if self.showing_menu:
                 # Show start menu
@@ -220,9 +251,12 @@ class Game:
                 age_button_rect = self.ui.update()
 
                 if pygame.mouse.get_pressed()[0] and age_button_rect.collidepoint(pygame.mouse.get_pos()):
-                    self.player.age_up()
+                    self.run_year()  # Call run_year instead of just aging up
                     self.events.add_event(
                         f"You are now {self.player.age} years old.")
+
+            if self.showing_event_popup:
+                self.draw_event_popup()
 
             pygame.display.flip()
             self.clock.tick(FPS)

@@ -1,4 +1,3 @@
-# events.py
 import random
 
 
@@ -30,8 +29,7 @@ class LifeEventManager:
             "impact": {"happiness": -5, "health": -10}},
     ]
 
-
-@staticmethod
-def get_random_life_event():
-    """Returns a random life event."""
-    return random.choice(LifeEventManager.life_events)
+    @staticmethod
+    def get_random_life_event():
+        """Returns a random life event."""
+        return random.choice(LifeEventManager.life_events)
