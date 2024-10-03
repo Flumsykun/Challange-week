@@ -69,28 +69,60 @@ class Game:
         self.ui.draw_stats(self.player.stats)
 
     def run(self):
-        # Main game loop
-        clock = pygame.time.Clock()  # Create a clock object to manage time
-        running = True  # Game loop control variable
+        """Main game loop."""
+        running = True
 
         while running:
-            # Limit the frame rate to 60 FPS and calculate delta time in seconds
-            dt = clock.tick(60) / 1000
-            running = self.handle_events()  # Check for events like quitting
-            self.update(dt)  # Update the game state (player movement, etc.)
-            self.render()  # Render everything on the screen
-            pygame.display.flip()  # Update the display with everything rendered
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                elif event.type == pygame.MOUSEBUTTONUP:  # Change to MOUSEBUTTONUP
+                    if event.button == 1:  # Left mouse button
+                        mouse_pos = pygame.mouse.get_pos()
+                        if self.showing_menu:
+                            random_button_rect = self.start_menu.update()
+                            mouse_pos = pygame.mouse.get_pos()  # Get the mouse position
+                            if random_button_rect.collidepoint(mouse_pos):
+                                self.create_random_life()
+                                self.showing_menu = False
+                                print("Random Life selected!")  # Debug message
+                        elif self.showing_game_ui and self.player:
+                            age_button_rect = self.ui.update()
+                            if age_button_rect.collidepoint(pygame.mouse.get_pos()) and not age_button_clicked:
+                                self.run_year()  # Increment age by one year
+                                self.events.add_event(
+                                    f"You are now {self.player.age} years old.")
+                                age_button_clicked = True  # Set the flag to true to prevent rapid aging
+
+                if event.type == pygame.MOUSEBUTTONUP:  # Reset the flag when the mouse button is released
+                    age_button_clicked = False
+
+            if self.showing_menu:
+                self.start_menu.update()
+            elif self.showing_game_ui and self.player:
+                # Run the main game after player is created
+                age_button_rect = self.ui.update()
+
+                if pygame.mouse.get_pressed()[0] and age_button_rect.collidepoint(pygame.mouse.get_pos()):
+                    # If the age button is clicked, trigger the year function
+                    if not age_button_clicked:
+                        self.run_year()  # Call run_year instead of just aging up
+                        self.events.add_event(
+                            f"You are now {self.player.age} years old.")
+                        age_button_clicked = True  # Set the flag to prevent multiple triggers
+
+            if self.toast_message:
+                self.toast_message.update()
+                self.toast_message.draw()
+                if not self.toast_message.active:
+                    self.toast_message = None
+
+            pygame.display.flip()
+            self.clock.tick(FPS)
+
+        pygame.quit()
 
 
-# Initialize Pygame and set up the game window
-pygame.init()  # Initialize all Pygame modules
-
-# Set up the screen with a resolution of 800x600 pixels
-screen = pygame.display.set_mode((800, 600))
-
-# Create a game instance and run the game
-game = Game(screen)  # Create a Game object, passing in the screen
-game.run()  # Start the game loop
-
-# Quit Pygame when the game loop ends
-pygame.quit()
+if __name__ == "__main__":
+    game_instance = Game()
+    game_instance.run()
