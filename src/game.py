@@ -2,8 +2,9 @@ import pygame
 from player import Player
 from events import EventManager
 from events import LifeEventManager
-from ui import GameUI, StartMenuUI
+from ui.ui import GameUI, StartMenuUI
 from config import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, WHITE, GREY, BLACK
+from ui.toast import ToastMessage
 import random
 
 
@@ -22,8 +23,7 @@ class Game:
         self.showing_menu = True
         self.showing_custom_life = False
         self.showing_game_ui = False
-        self.showing_event_popup = False
-        self.current_event_message = ""
+        self.toast_message = None
 
         # Initialize UI components
         self.start_menu = StartMenuUI()
@@ -45,15 +45,13 @@ class Game:
             # Apply event impact on player stats
             for stat, value in event["impact"].items():
                 if hasattr(self.player, stat):
-                    setattr(self.player, stat, getattr(
-                        self.player, stat) + value)
+                    setattr(self.player, stat, getattr(self.player, stat) + value)
                     print(f"Updated {stat} by {value}")  # Debug print
                 else:
                     print(f"Player has no attribute {stat}")  # Debug print
 
-            # Set the event message to display as a pop-up
-            self.current_event_message = event["event"]
-            self.showing_event_popup = True
+            # Create a toast message
+            self.toast_message = ToastMessage(self.screen, event["event"])
 
     def run_year(self):
         """Simulate one year of the game."""
@@ -199,19 +197,6 @@ class Game:
         text_surface = font.render(text, True, BLACK)
         self.screen.blit(text_surface, (x, y))
 
-    def draw_event_popup(self):
-        """Draws the event pop-up on the screen."""
-        popup_rect = pygame.Rect(100, 100, 600, 200)
-        pygame.draw.rect(self.screen, GREY, popup_rect)
-        self.draw_text(self.current_event_message, 120, 150)
-
-        # Draw a close button
-        close_button_rect = pygame.Rect(350, 250, 100, 40)
-        pygame.draw.rect(self.screen, WHITE, close_button_rect)
-        self.draw_text("Close", 370, 260)
-
-        return close_button_rect
-
     def run(self):
         """Main game loop."""
         running = True
@@ -233,12 +218,6 @@ class Game:
                                 self.create_random_life()
                                 self.showing_menu = False
                                 print("Random Life selected!")  # Debug message
-                        elif self.showing_event_popup:
-                            close_button_rect = self.draw_event_popup()
-                            mouse_pos = pygame.mouse.get_pos()
-                            if close_button_rect.collidepoint(mouse_pos):
-                                self.showing_event_popup = False
-                                print("Event pop-up closed")  # Debug message
 
             if self.showing_menu:
                 # Show start menu
@@ -255,8 +234,11 @@ class Game:
                     self.events.add_event(
                         f"You are now {self.player.age} years old.")
 
-            if self.showing_event_popup:
-                self.draw_event_popup()
+            if self.toast_message:
+                self.toast_message.update()
+                self.toast_message.draw()
+                if not self.toast_message.active:
+                    self.toast_message = None
 
             pygame.display.flip()
             self.clock.tick(FPS)
