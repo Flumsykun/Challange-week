@@ -30,6 +30,7 @@ class Game:
         self.player = None
         self.ui = None
 
+        self.age_button_toggled = False
         # Dropdown for nationality
         self.selected_nationality = 'American'
         self.nationality_options = [
@@ -201,48 +202,41 @@ class Game:
     def run(self):
         """Main game loop."""
         running = True
-        age_button_clicked = False  # Flag to check if the age button was clicked
+
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-                elif event.type == pygame.MOUSEBUTTONDOWN:
+                elif event.type == pygame.MOUSEBUTTONUP:  # Change to MOUSEBUTTONUP
                     if event.button == 1:  # Left mouse button
+                        mouse_pos = pygame.mouse.get_pos()
                         if self.showing_menu:
                             custom_button_rect, random_button_rect = self.start_menu.update()
-                            mouse_pos = pygame.mouse.get_pos()  # Get the mouse position
                             if custom_button_rect.collidepoint(mouse_pos):
                                 self.showing_custom_life = True
                                 self.showing_menu = False
-                                print("Custom Life selected!")  # Debug message
-                                self.custom_life_input()  # Call the input method
+                                print("Custom Life selected!")
+                                self.custom_life_input()
                             elif random_button_rect.collidepoint(mouse_pos):
                                 self.create_random_life()
                                 self.showing_menu = False
-                                print("Random Life selected!")  # Debug message
-                    elif self.showing_game_ui and self.player:
-                        age_button_rect = self.ui.update()
-                        if age_button_rect.collidepoint(mouse_pos) and not age_button_clicked:
-                            self.run_year()  # Increment age by one year
-                            self.events.add_event(f"You are now {self.player.age} years old.")
-                            age_button_clicked = True  # Set the flag to true to prevent rapid aging
+                                print("Random Life selected!")
+                        elif self.showing_game_ui and self.player:
+                            age_button_rect = self.ui.update()
+                            # Check if the age button was clicked
+                            if age_button_rect.collidepoint(mouse_pos):
+                                self.age_button_toggled = not self.age_button_toggled  # Toggle the state
+                                if self.age_button_toggled:  # If the button is now toggled on
+                                    self.run_year()  # Increment age by one year
+                                    self.events.add_event(
+                                        f"You are now {self.player.age} years old.")
 
-            if event.type == pygame.MOUSEBUTTONUP:  # Reset the flag when the mouse button is released
-                age_button_clicked = False
             if self.showing_menu:
-                # Show start menu
                 self.start_menu.update()
             elif self.showing_custom_life:
-                # No longer loop infinitely, as input is handled in custom_life_input
-                print("In Custom Life setup...")  # Debug message
+                pass  # You can add any relevant code here
             elif self.showing_game_ui and self.player:
-                # Run the main game after player is created
-                age_button_rect = self.ui.update()
-
-                if pygame.mouse.get_pressed()[0] and age_button_rect.collidepoint(pygame.mouse.get_pos()):
-                    self.run_year()  # Call run_year instead of just aging up
-                    self.events.add_event(
-                        f"You are now {self.player.age} years old.")
+                self.ui.update()  # Update UI as necessary
 
             if self.toast_message:
                 self.toast_message.update()

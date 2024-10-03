@@ -7,8 +7,8 @@ import pygame
 pygame.init()
 
 # Screen dimensions
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 900
+SCREEN_HEIGHT = 700
 
 # Colors
 WHITE = (255, 255, 255)
