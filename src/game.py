@@ -1,79 +1,102 @@
 import pygame
-from player import Player  # Import the Player class from the player module
-from ui import UI  # Import the UI class from the ui module
+from player import Player
+from events import EventManager
+from activities.activities import get_activities_for_age
+from ui.ui import GameUI, StartMenuUI
+from config import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, WHITE, GREY, BLACK
+from ui.toast import ToastMessage
+import random
 
 
 class Game:
     def __init__(self, screen):
-        # Initialize the game with the provided screen and a player instance
-        # The Pygame screen object where the game is rendered
         self.screen = screen
         self.player = Player()  # Create a player object
-        self.ui = UI(screen)  # Create a UI object for displaying text
+        # Game UI for the stats and activities
+        self.ui = GameUI(self.player, EventManager())
+        self.start_menu = StartMenuUI()  # Start menu UI for Random Life
+        self.showing_menu = True  # Show start menu initially
+        self.showing_activities = False  # Activities hidden at the start
+        self.available_activities = get_activities_for_age(self.player.age)
+        self.toast_message = None
 
     def handle_events(self):
-        # Handle all Pygame events (like key presses, window close, etc.)
-        for event in pygame.event.get():  # Get all events that have occurred
-            if event.type == pygame.QUIT:  # If the user closes the window
-                return False  # Stop the game loop
-        return True  # Continue running the game loop if no quit event
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return False
+            elif event.type == pygame.MOUSEBUTTONUP:
+                mouse_pos = pygame.mouse.get_pos()
+                if self.showing_menu:
+                    random_button_rect = self.start_menu.update()
+                    if random_button_rect.collidepoint(mouse_pos):
+                        self.create_random_life()
+                        self.showing_menu = False  # Exit start menu
+                        print("Random Life selected!")
+                else:
+                    if self.ui.hamburger_menu_rect.collidepoint(mouse_pos):
+                        self.showing_activities = not self.showing_activities  # Toggle activities
 
-    def update(self, dt):
-        # Update game objects, specifically the player's position based on input
-        # dt (delta time) is the time passed since the last frame for
-        # frame-independent movement
-        keys = pygame.key.get_pressed()  # Get the state of all keys (pressed or not)
+                    # Handle activity selection if the activity menu is open
+                    if self.showing_activities:
+                        activity_rects = self.ui.get_activity_rects(
+                            self.available_activities)
+                        for i, rect in enumerate(activity_rects):
+                            if rect.collidepoint(mouse_pos):
+                                self.handle_activity_selection(
+                                    self.available_activities[i])
 
-        # Move the player upwards when 'W' is pressed
-        if keys[pygame.K_w]:
-            # Move up (negative y) at a speed of 300 units/second
-            self.player.move(0, -300 * dt)
+        return True
 
-        # Move the player downwards when 'S' is pressed
-        if keys[pygame.K_s]:
-            # Move down (positive y) at a speed of 300 units/second
-            self.player.move(0, 300 * dt)
-
-        # Move the player left when 'A' is pressed
-        if keys[pygame.K_a]:
-            # Move left (negative x) at a speed of 300 units/second
-            self.player.move(-300 * dt, 0)
-
-        # Move the player right when 'D' is pressed
-        if keys[pygame.K_d]:
-            # Move right (positive x) at a speed of 300 units/second
-            self.player.move(300 * dt, 0)
+    def update(self):
+        """Update game logic, including activities and stats."""
+        if not self.showing_menu and not self.showing_activities:
+            for activity in self.available_activities:
+                activity.check_availabilty(self.player.age)
 
     def render(self):
-        # Render all game objects onto the screen
-        self.screen.fill((50, 50, 50))
-        self.player.render(self.screen)
-        # Render the player's stats on the screen
-        self.ui.draw_stats(self.player.stats)
+        self.screen.fill(WHITE)
+        if self.showing_menu:
+            self.start_menu.update()
+        else:
+            self.ui.update()
+            if self.showing_activities:
+                self.ui.draw_activity_menu(self.available_activities)
+
+        if self.toast_message:
+            self.toast_message.update()
+            self.toast_message.draw()
+
+        pygame.display.flip()
 
     def run(self):
-        # Main game loop
-        clock = pygame.time.Clock()  # Create a clock object to manage time
-        running = True  # Game loop control variable
-
+        clock = pygame.time.Clock()
+        running = True
         while running:
-            # Limit the frame rate to 60 FPS and calculate delta time in seconds
-            dt = clock.tick(60) / 1000
-            running = self.handle_events()  # Check for events like quitting
-            self.update(dt)  # Update the game state (player movement, etc.)
-            self.render()  # Render everything on the screen
-            pygame.display.flip()  # Update the display with everything rendered
+            running = self.handle_events()
+            self.update()
+            self.render()
+            clock.tick(FPS)
 
+        pygame.quit()
 
-# Initialize Pygame and set up the game window
-pygame.init()  # Initialize all Pygame modules
+    def create_random_life(self):
+        """Set up a new random life for the player."""
+        self.player = Player()
+        self.toast_message = ToastMessage(self.screen, "Random Life Created")
 
-# Set up the screen with a resolution of 800x600 pixels
-screen = pygame.display.set_mode((800, 600))
+    def handle_activity_selection(self, selected_activity):
+        """Apply the effects of the selected activity."""
+        if selected_activity.available:
+            print(
+                f"Selected {selected_activity.name}: {selected_activity.description}")
+            self.apply_activity_effects(selected_activity)
+        else:
+            print(f"You are too young for {selected_activity.name}.")
 
-# Create a game instance and run the game
-game = Game(screen)  # Create a Game object, passing in the screen
-game.run()  # Start the game loop
-
-# Quit Pygame when the game loop ends
-pygame.quit()
+    def apply_activity_effects(self, activity):
+        """Modify player's stats based on the selected activity."""
+        if activity.name == "Go to Gym":
+            self.player.health += 10  # Example
+        elif activity.name == "Travel":
+            self.player.happiness += 5
+        # Add more activity logic here
